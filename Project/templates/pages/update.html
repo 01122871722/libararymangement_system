@@ -1,0 +1,32 @@
+
+{% extends 'base.html'%}
+{% block content %}
+<div style="direction: rtl;" class="wrapper"></div>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div   class="content-wrapper">
+    <!-- Content Header (Page header) -->
+<div  class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">update the book </h3>
+    </div>
+    <!-- /.card-header -->
+    <!-- form start -->
+    <form  method="POST" enctype="multipart/form-data">
+     {% csrf_token %}
+      <div class="card-body">
+        
+        {{form}}
+
+        <small id='totalrente' class="form-text text-muted"></small>
+      </div>
+      <!-- /.card-body -->
+
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary">save</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+{% endblock %}

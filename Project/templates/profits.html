@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأرباح</title>
+</head>
+<body>
+    <h1>الأرباح</h1>
+    <p>إجمالي الأرباح: {{ total_profits }}</p>
+    <p>الأرباح من الكتب المباعة: {{ sold_profits }}</p>
+    <p>الأرباح من الكتب المؤجرة: {{ rented_profits }}</p>
+
+    <h2>رسم الأرباح</h2>
+    <img src="data:image/png;base64,{{ chart }}" alt="Profit Chart">
+
+    <!-- إضافة باقي محتويات الصفحة الأصلية إن وجدت -->
+</body>
+</html>

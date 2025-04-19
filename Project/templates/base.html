@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <title>Nouvil</title>
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="{% static 'plugins/jquery_datepicker/jquery_ui.css' %}">
+    <!-- IonIcons -->
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte_ar.min.css' %}">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body dir="rtl" class="hold-transition sidebar-mini">
+   <h1>Welcome to the Book Library</h1>
+    {% include 'parts/navbar.html' %}
+    {% include 'parts/sidebar.html' %}
+    {% block content %}
+    {% endblock content %}
+    {% include 'parts/footer.html' %}
+
+    <script>
+    var books = JSON.parse('{{ books_json|escapejs }}');
+  
+  
+      $(document).ready(function() {
+          books.forEach(function(book) {
+              $(document).on('click', ".cat" + book.categoryId, function() {
+                  $(".bookhide").hide();
+                  $(".book" + book.categoryId).show();
+              });
+              $(document).on('click', ".status" + book.status, function() {
+                  $(".bookhide").hide();
+                  $(".book" + book.status).show();
+              });
+          });
+      });
+    </script>
+
+    <script>
+      $("#rentaldays").keyup(function() {
+        $("#totalrental").val($("#rentaldays").val() * $("#rentalprice").val());
+      });
+
+      $(document).ready(function() {
+        var total = 0;
+        $(".totalprice").each(function() {
+          $(this).hide();
+          var salary = $(this).text();
+          total += parseFloat(salary);
+        });
+        $("#totalsalarys").text($("#totalsalarys").text() + total);
+        
+        var totalRental = 0;
+        $(".totalrental").each(function() {
+          $(this).hide();
+          var salaryRental = $(this).text();
+          totalRental += parseFloat(salaryRental);
+        });
+        $(".salaryrental").text(totalRental).hide();
+
+        var totalSold = 0;
+        $(".totalsold").each(function() {
+          $(this).hide();
+          var salarySold = $(this).text();
+          totalSold += parseFloat(salarySold);
+        });
+        $(".salarysold").text(totalSold).hide();
+      });
+    </script>
+    
+
+    <!-- REQUIRED SCRIPTS -->
+    <script src="{% static 'plugins/jquery_datepicker/jquery_ui.js' %}"></script>
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'dist/js/adminlte.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <canvas id="sales-chart" height="140"></canvas>
+    <script>
+      // رسم الأرباح
+      
+     var ticksStyle = { fontColor: '#495057', fontStyle: 'bold' };
+     var mode = 'index', intersect = true;
+     var ctx = document.getElementById('sales-chart').getContext('5d');
+     var salesChart = new Chart($('#sales-chart'), {
+  type: 'bar',
+  data: {
+    labels: ['تفاصيل الأرباح'],
+    datasets: [
+      {
+        backgroundColor: '#007bff',
+        borderColor: '#007bff',
+        data: [parseFloat('{{ sold_profit }}')],
+        label: 'مبيعات'
+      },
+      {
+        backgroundColor: '#ced4da',
+        borderColor: '#ced4da',
+        data: [parseFloat('{{ rental_profit }}')],
+        label: 'إيجار'
+      }
+    ]
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: { mode: 'index', intersect: true },
+    hover: { mode: 'index', intersect: true },
+    legend: { display: true },  // عرض العنوان
+    scales: {
+      yAxes: [{
+        gridLines: {
+          display: true,
+          lineWidth: '4px',
+          color: 'rgba(0, 0, 0, .2)',
+          zeroLineColor: 'transparent'
+        },
+        ticks: {
+          beginAtZero: true,
+          max: 50,  // القيمة القصوى للتدرج
+          stepSize: 10,  // الخطوة بين القيم
+          fontColor: '#495057',
+          fontStyle: 'bold'
+        }
+      }],
+      xAxes: [{
+        display: true,
+        gridLines: { display: false },
+        ticks: { fontColor: '#495057', fontStyle: 'bold' }
+      }]
+    }
+  }
+});
+
+   
+
+
+
+
+
+
+
+
+      var pieChart = document.getElementById('visitors-chart').getContext('2d');
+      new Chart(pieChart, {
+        type: 'pie',
+        data: {
+          datasets: [{
+            data: ['{{bookavailable}}', '{{booksold}}', '{{bookrental}}'],
+            backgroundColor: ["#27c100", "#f3545d", "#fdaf4b"],
+            borderWidth: 10,
+          }],
+          labels: ['Available', 'Sold', 'Rented']
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: {
+            position: 'bottom',
+            labels: {
+              fontColor: '#000',
+              fontSize: 15,
+              usePointStyle: true,
+              padding: 30
+            }
+          }
+        }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      var ctx = document.getElementById('booksChart').getContext('2d');
+      var booksChart = new Chart(ctx, {
+          type: 'doughnut',  // نوع الرسم البياني
+          data: {
+              labels: ['available', 'rental', 'sold'],  // التسميات
+              datasets: [{
+                  label: 'نسب الكتب',
+                  data: [
+                      '{{available_percent}}', 
+                      '{{ rental_percent}}', 
+                      '{{ sold_percent }}'
+                  ] , // البيانات
+                  backgroundColor: ['#28a745', '#ffc107', '#dc3545'],  // الألوان
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true,
+              plugins: {
+                  legend: {
+                      position: 'bottom',
+                  }
+              }
+          }
+      });
+  </script>
+   
+</body>
+</html>

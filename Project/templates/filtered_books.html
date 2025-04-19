@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtered Books</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Books</h1>
+    <ul>
+        {% for book in books %}
+            <li>
+                {% if book.status|lower == 'rental' %}
+
+                    <strong>Title:</strong> {{ book.title }} <br>
+                    <strong>Author:</strong> {{ book.author }} <br>
+                    <strong>Status:</strong> {{ book.status }} <br>
+                    <strong>Price per day:</strong> {{ book.rental_price_day }} <br>
+                {% else %}
+                    <strong>Title:</strong> {{ book.title }} <br>
+                    <strong>Author:</strong> {{ book.author }} <br>
+                    <strong>Status:</strong> {{ book.status }} <br>
+                    <strong>Price:</strong> {{ book.price }} <br>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No books available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'home' %}">Back to Home</a>
+</body>
+</html>
